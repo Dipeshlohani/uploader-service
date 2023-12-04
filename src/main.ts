@@ -22,7 +22,8 @@ async function bootstrap() {
   // const upload = multer({ storage });
 
   // app.use(upload.array('files'));
-
+  // Serve static files from the 'uploads' directory
+  app.use('/uploads', express.static('uploads'));
   await app.listen(3000);
 }
 bootstrap();
