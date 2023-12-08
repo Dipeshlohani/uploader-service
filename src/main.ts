@@ -3,15 +3,8 @@ import * as express from 'express';
 import * as cors from 'cors';
 import * as morgan from 'morgan'
 import { config } from 'dotenv';
-import { AppModule } from './app.module';
-
 config();
-
-const server = express();
-server.use(cors());
-server.use(express.json({ limit: '50mb' }));
-server.use(express.urlencoded({ extended: false, limit: '50mb' }));
-server.use(morgan('dev')); // Use morgan middleware with 'dev' format
+import { AppModule } from './app.module';
 
 import { NestExpressApplication } from '@nestjs/platform-express';
 
@@ -23,7 +16,13 @@ async function bootstrap() {
 
   // app.use(upload.array('files'));
   // Serve static files from the 'uploads' directory
+  app.enableCors({
+    origin: process.env.FRONTEND_URL, // Replace with the origin of your React app
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
   app.use('/uploads', express.static('uploads'));
-  await app.listen(3000);
+  await app.listen(process.env.PORT);
 }
 bootstrap();

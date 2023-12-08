@@ -8,7 +8,6 @@ export const multerConfig = {
     destination: (req, file, cb) => {
       const folderId = req.body.folderId || req.headers['folderid'] || 'defaultFolder';
       const folderPath = path.join(__dirname, '..', 'uploads', folderId);
-      console.log(folderPath, 'path---');
       // Create the folder if it doesn't exist
       if (!fs.existsSync(folderPath)) {
         fs.mkdirSync(folderPath, { recursive: true });

@@ -20,7 +20,7 @@ export class FileController {
   async create(
     @UploadedFiles() files: Express.Multer.File[],
     @Body() createFileDto: CreateFileDto,
-  ): Promise<File[]> {
+  ): Promise<{ createdFile: File; relativePath: string }[]> {
     try {
       return this.fileService.create(files, createFileDto);
     } catch (error) {

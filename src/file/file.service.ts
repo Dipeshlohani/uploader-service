@@ -14,12 +14,14 @@ export class FileService {
     @InjectModel(Folder.name) private folderModel: Model<Folder>,
   ) { }
 
-  async create(files, createFileDto: CreateFileDto): Promise<File[]> {
+  async create(
+    files,
+    createFileDto: CreateFileDto,
+  ): Promise<{ createdFile: File; relativePath: string }[]> {
     try {
       // Extract additional data from createFileDto, e.g., folderId
       const { folderId } = createFileDto;
       const filePromises = files.map(async (file) => {
-
         // Ensure the folder structure exists
         const filePath = file.path;
         fs.mkdirSync(path.dirname(filePath), { recursive: true });
@@ -34,13 +36,14 @@ export class FileService {
         const createdFile = new this.fileModel({
           name: file.originalname,
           folderId,
-          // Add other properties as needed
         });
-        console.log(createdFile, '-createdFile');
 
         await createdFile.save();
 
-        return { createdFile, filePath };
+        // Get the relative path
+        let relativePath = path.relative('uploads', filePath);
+        relativePath = process.env.HOST + '/uploads/' + relativePath;
+        return { createdFile, relativePath };
       });
 
       return Promise.all(filePromises);
