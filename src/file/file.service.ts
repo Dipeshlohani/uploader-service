@@ -20,7 +20,6 @@ export class FileService {
   ): Promise<{ createdFile: File; relativePath: string }[]> {
     try {
       // Extract additional data from createFileDto, e.g., folderId
-      const { folderId } = createFileDto;
       const filePromises = files.map(async (file) => {
         // Ensure the folder structure exists
         const filePath = file.path;
@@ -32,18 +31,21 @@ export class FileService {
         // Save file on the file system
         fs.writeFileSync(filePath, fileContent);
 
+        // Get the relative path
+        let relativePath = path.relative('uploads', filePath);
+        relativePath = process.env.HOST + '/uploads/' + relativePath;
         // Save file information to the database
         const createdFile = new this.fileModel({
           name: file.originalname,
-          folderId,
+          path: relativePath,
+          year: createFileDto.year,
+          ref_no: createFileDto.ref_no,
+          folderId: createFileDto.folderId,
         });
 
         await createdFile.save();
 
-        // Get the relative path
-        let relativePath = path.relative('uploads', filePath);
-        relativePath = process.env.HOST + '/uploads/' + relativePath;
-        return { createdFile, relativePath };
+        return createdFile;
       });
 
       return Promise.all(filePromises);
