@@ -5,7 +5,7 @@ import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/folder-uploader'),
+    MongooseModule.forRoot(process.env.MONGODB_URI),
     FolderModule,
     FileModule,
   ],

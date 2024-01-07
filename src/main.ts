@@ -17,7 +17,7 @@ async function bootstrap() {
   // app.use(upload.array('files'));
   // Serve static files from the 'uploads' directory
   app.enableCors({
-    origin: process.env.FRONTEND_URL, // Replace with the origin of your React app
+    origin: "*", // Replace with the origin of your React app
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
